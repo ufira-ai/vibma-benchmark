@@ -1,27 +1,43 @@
 # Vibma Benchmark
 
-Standardized evaluation of AI models performing design tasks in Figma through [Vibma](https://github.com/nicepkg/vibma) MCP.
+Standardized evaluation of AI models performing design tasks in Figma through [Vibma](https://github.com/nicepkg/vibma) MCP (V0.3.1).
 
 ## How It Works
 
 A model connects to Figma via Vibma and is given a multi-step design challenge ([`instructions.md`](instructions.md)) — build a design system page, then a UI mockup, following proper design practices throughout.
 
-Once complete, Opus 4.6 reviews the work using [`review.md`](review.md): inspects the node tree, checks for hardcoded values vs design tokens, runs lint, and scores across 7 criteria. It then gives the model specific feedback to fix. The model applies fixes, and Opus scores a second time — this pass measures how well the model responds to design review feedback.
+The model runs via [Cursor agent CLI](https://cursor.com/docs/cli/using) with `--output-format stream-json`, which captures the full conversation — every tool call, response, and decision — into an NDJSON log. Opus 4.6 then reviews both the Figma output and the conversation log to evaluate how the model approached the work.
+
+After first-pass scoring, Opus provides specific improvement feedback. The model applies fixes (also captured via Cursor CLI), and Opus scores a second time focused on how well the model addressed the feedback.
 
 ```
-Model reads instructions.md
+cursor-agent runs model with instructions.md
         ↓
-Model builds in Figma via Vibma
+Model builds in Figma via Vibma (conversation logged as NDJSON)
         ↓
-Opus 4.6 reviews → scores design practice adherence (first pass, /35)
+Opus 4.6 reviews Figma output + conversation log
         ↓
-Opus gives specific improvement feedback
+Opus writes report: scores, what went well, what didn't (first pass, /35)
         ↓
-Model applies fixes
+Opus gives specific improvement feedback → model applies fixes
         ↓
-Opus reviews again → scores fix quality (second pass, /35)
+Opus reviews again → report on fix quality (second pass, /35)
         ↓
-Final screenshot + results saved
+Final screenshot + report saved to results/
+```
+
+## Running a Benchmark
+
+```bash
+# Run the model — captures full conversation to NDJSON
+cursor-agent -p \
+  --model <model-name> \
+  --output-format stream-json \
+  "$(cat instructions.md)" \
+  > results/<model-name>-log.ndjson
+
+# Opus reviews the work (in Claude Code or Cursor with Opus)
+# Give it review.md + the NDJSON log + Vibma access to the Figma file
 ```
 
 ## Results
@@ -34,7 +50,7 @@ Final screenshot + results saved
 | Claude Sonnet 4.6 | 28/35 | 33/35 | [screenshot](results/claude-sonnet-4-6-final.png) |
 -->
 
-Per-model breakdowns with full score tables, the improvement prompt given, and final screenshot are in [`results/`](results/).
+Full reports with commentary, score tables, and screenshots are in [`results/`](results/).
 
 ## Scoring
 
