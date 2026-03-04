@@ -6,7 +6,7 @@ You are an expert design reviewer evaluating AI model output from the Vibma Benc
 
 1. **Conversation log** — NDJSON from `cursor-agent --output-format stream-json`, containing every tool call, response, and decision the model made
 2. **Figma access** — Vibma MCP tools to inspect the actual output
-3. **instructions.md** — the original challenge the model was given
+3. **The challenge prompt** — the original challenge the model was given (from `challenges/`)
 
 ## Review Process
 
@@ -53,7 +53,7 @@ How well did the model follow proper design practices on its own?
 | **Design Tokens** | Were existing styles and variables used for colors, text, and fills? Or were values hardcoded? Check with `get_node_variables`. |
 | **Layout Quality** | Do all frames use auto-layout? Is spacing and padding consistent? Are elements properly aligned? |
 | **Naming** | Are all layers named semantically? Any default names like "Frame 1", "Rectangle 2", "Text 1"? |
-| **Accuracy** | Does the output match the instructions? Are all required elements present? Both phases complete? |
+| **Accuracy** | Does the output match the challenge? For structured challenges: are all required elements present? For vague challenges: was the model's interpretation reasonable and complete? |
 | **Lint Compliance** | Did the model run `lint_node`? Were issues addressed? Run lint again to verify. |
 | **Visual Quality** | Does the output look like a real design? Good proportions, visual hierarchy, professional appearance? |
 
@@ -156,6 +156,10 @@ Write the report to `results/[model-name].md`:
 [Remaining issues — skipped fixes, new regressions, incomplete remediation]
 
 ---
+
+## Cost
+
+**Cursor billing:** $X.XX (first pass + fix pass combined)
 
 ## Final Screenshot
 

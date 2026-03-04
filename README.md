@@ -4,59 +4,52 @@ Standardized evaluation of AI models performing design tasks in Figma through [V
 
 ## How It Works
 
-A model connects to Figma via Vibma and is given a multi-step design challenge ([`instructions.md`](instructions.md)) — build a design system page, then a UI mockup, following proper design practices throughout.
+Models are run via [Cursor agent CLI](https://cursor.com/docs/cli/using) with `--output-format stream-json`, which captures the full conversation — every tool call, response, and decision — into an NDJSON log. The orchestrator ([`run.md`](run.md)) manages the pipeline end-to-end.
 
-The model runs via [Cursor agent CLI](https://cursor.com/docs/cli/using) with `--output-format stream-json`, which captures the full conversation — every tool call, response, and decision — into an NDJSON log. Opus 4.6 then reviews both the Figma output and the conversation log to evaluate how the model approached the work.
-
-After first-pass scoring, Opus provides specific improvement feedback. The model applies fixes (also captured via Cursor CLI), and Opus scores a second time focused on how well the model addressed the feedback.
+Each model gets a challenge from [`challenges/`](challenges/) — either a detailed spec or a vague one-liner. Opus 4.6 reviews both the Figma output and the conversation log using [`review.md`](review.md), writes a report with scores and commentary on what the model did well and what it got wrong, then gives specific improvement feedback. The model applies fixes, and Opus reviews again.
 
 ```
-cursor-agent runs model with instructions.md
+Orchestrator picks model + challenge
         ↓
-Model builds in Figma via Vibma (conversation logged as NDJSON)
+cursor-agent runs model (conversation → NDJSON log)
         ↓
-Opus 4.6 reviews Figma output + conversation log
+Opus reviews Figma output + conversation log
         ↓
-Opus writes report: scores, what went well, what didn't (first pass, /35)
+Report: scores + what went well + what went wrong (first pass, /35)
         ↓
-Opus gives specific improvement feedback → model applies fixes
+Model receives improvement feedback → applies fixes
         ↓
-Opus reviews again → report on fix quality (second pass, /35)
+Report: fix quality + what improved + what's still wrong (second pass, /35)
         ↓
-Final screenshot + report saved to results/
+Screenshot + full report saved to results/
 ```
 
-## Running a Benchmark
+## Challenges
 
-```bash
-# Run the model — captures full conversation to NDJSON
-cursor-agent -p \
-  --model <model-name> \
-  --output-format stream-json \
-  "$(cat instructions.md)" \
-  > results/<model-name>-log.ndjson
+| Challenge | Type | Prompt |
+|-----------|------|--------|
+| [design-system-structured](challenges/design-system-structured.md) | Structured | Build a design system page + settings card with specific requirements |
+| [personal-blog-vague](challenges/personal-blog-vague.md) | Vague | "Build a design system for my personal blog. Support light and dark mode." |
 
-# Opus reviews the work (in Claude Code or Cursor with Opus)
-# Give it review.md + the NDJSON log + Vibma access to the Figma file
-```
+**Structured** challenges test whether a model can follow detailed design specs. **Vague** challenges test whether it can interpret intent and make good design decisions on its own.
 
 ## Results
 
-| Model | First Pass | After Fix | Visual |
-|-------|-----------|-----------|--------|
-| — | /35 | /35 | — |
+| Model | Challenge | First Pass | After Fix | Cost | Visual |
+|-------|-----------|-----------|-----------|------|--------|
+| — | — | /35 | /35 | — | — |
 
 <!-- Example row:
-| Claude Sonnet 4.6 | 28/35 | 33/35 | [screenshot](results/claude-sonnet-4-6-final.png) |
+| Claude Sonnet 4.6 | design-system-structured | 28/35 | 33/35 | $0.42 | [screenshot](results/claude-sonnet-4-6-design-system-structured-final.png) |
 -->
 
-Full reports with commentary, score tables, and screenshots are in [`results/`](results/).
+Full reports with score tables, commentary, and screenshots are in [`results/`](results/).
 
 ## Scoring
 
-Each pass scores 7 criteria on a 1–5 scale (max 35).
+Each pass scores 7 criteria on a 1–5 scale (max 35). Reports include commentary — not just scores, but what specifically went well and what went wrong.
 
-**First pass** — did the model follow design practices on its own?
+**First pass** — did the model follow design practices?
 
 | Criterion | What's Evaluated |
 |-----------|-----------------|
@@ -64,7 +57,7 @@ Each pass scores 7 criteria on a 1–5 scale (max 35).
 | Design Tokens | Styles/variables used vs hardcoded values |
 | Layout Quality | Auto-layout, spacing, alignment |
 | Naming | Semantic names on all layers |
-| Accuracy | All required elements present |
+| Accuracy | All requirements met (structured) or reasonable interpretation (vague) |
 | Lint Compliance | Ran lint, fixed issues |
 | Visual Quality | Professional appearance, hierarchy |
 
