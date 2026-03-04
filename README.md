@@ -6,9 +6,13 @@ Models are given a multi-step design challenge (`instructions.md`), then reviewe
 
 ## Results
 
-| Model | Tool Usage | Tokens | Layout | Naming | Accuracy | Lint | Visual | Total | After Fix |
-|-------|-----------|--------|--------|--------|----------|------|--------|-------|-----------|
-| — | — | — | — | — | — | — | — | /35 | /35 |
+| Model | First Pass | After Fix | Visual |
+|-------|-----------|-----------|--------|
+| — | /35 | /35 | — |
+
+<!-- Example row:
+| Claude Sonnet 4.6 | 28/35 | 33/35 | [screenshot](results/claude-sonnet-4-6-final.png) |
+-->
 
 ## How to Run
 
@@ -27,12 +31,15 @@ Models are given a multi-step design challenge (`instructions.md`), then reviewe
    - Access to inspect the Figma file via Vibma
 6. Opus scores the work and provides improvement feedback
 7. Give the model the improvement feedback, let it apply fixes
-8. Opus scores again using the same rubric
-9. Save results to `results/[model-name].md`
+8. Opus scores again (second pass rubric — focused on fix quality)
+9. Save the final exported PNG to `results/[model-name]-final.png`
+10. Save results to `results/[model-name].md`
 
 ### Scoring
 
-Each criterion is scored 1–5 (max total: 35):
+Each criterion is scored 1–5 (max total: 35).
+
+**First pass** — how well the model follows design practices:
 
 | Criterion | What's Evaluated |
 |-----------|-----------------|
@@ -43,6 +50,22 @@ Each criterion is scored 1–5 (max total: 35):
 | Accuracy | All required elements present |
 | Lint Compliance | Ran lint, fixed issues |
 | Visual Quality | Professional appearance, hierarchy |
+
+**Second pass** — how well the model fixes issues from feedback:
+
+| Criterion | What's Evaluated |
+|-----------|-----------------|
+| Issue Coverage | Did it address all flagged issues? |
+| Fix Quality | Were fixes correct, or did they introduce new problems? |
+| Token Remediation | Hardcoded values replaced with proper variables/styles? |
+| Layout Fixes | Auto-layout and spacing issues resolved? |
+| Naming Fixes | Default names replaced with semantic ones? |
+| Lint Resolution | Previously failing lint checks now pass? |
+| Visual Improvement | Visible improvement in the final screenshot? |
+
+### Results per Model
+
+Full per-model breakdowns are in `results/[model-name].md`. Each includes both score tables, the improvement prompt given, and a final screenshot at `results/[model-name]-final.png`.
 
 ## License
 

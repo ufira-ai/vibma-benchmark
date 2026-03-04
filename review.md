@@ -35,7 +35,9 @@ Score each criterion from **1 to 5**:
 | 4 | Mostly correct, minor issues |
 | 5 | Excellent, meets all requirements |
 
-### Rubric
+### First Pass Rubric — Design Practices
+
+How well did the model follow proper design practices on its own?
 
 | Criterion | What to Evaluate |
 |-----------|-----------------|
@@ -49,14 +51,34 @@ Score each criterion from **1 to 5**:
 
 ### Step 3 — Write Improvement Feedback
 
-After scoring, write **specific, actionable improvement prompts** the model can follow to fix issues. Be precise:
+After scoring, write **specific, actionable improvement prompts** the model can follow to fix issues. Be precise about each problem:
 
 - BAD: "Improve the layout"
 - GOOD: "The Color Palette frame is missing auto-layout. Apply vertical auto-layout with 16px gap. The swatch 'Swatch / Primary' uses hardcoded fill #3B82F6 — bind it to the 'Primary' color variable instead."
 
+List every issue you found, grouped by criterion. This becomes the model's fix list.
+
 ### Step 4 — Second Pass Rating
 
-After the model applies fixes, inspect and rate again using the same rubric.
+After the model applies fixes, inspect the work again and rate using the **second pass rubric**.
+
+### Second Pass Rubric — Fix Quality
+
+How well did the model address the specific feedback it was given?
+
+| Criterion | What to Evaluate |
+|-----------|-----------------|
+| **Issue Coverage** | Did the model address all flagged issues, or did it skip some? |
+| **Fix Quality** | Were the fixes correctly applied? Did they introduce new problems or regressions? |
+| **Token Remediation** | Were hardcoded values successfully replaced with proper variables/styles? |
+| **Layout Fixes** | Were auto-layout and spacing issues resolved? Padding and alignment corrected? |
+| **Naming Fixes** | Were default layer names replaced with semantic ones? |
+| **Lint Resolution** | Do previously failing lint checks now pass? Run `lint_node` again to verify. |
+| **Visual Improvement** | Is there visible improvement in the final output compared to the first pass? |
+
+### Step 5 — Save Final Screenshot
+
+Export the final result as PNG and save it to `results/[model-name]-final.png`.
 
 ## Output Format
 
@@ -83,28 +105,34 @@ Write results to `results/[model-name].md` using this format:
 
 > [Your specific feedback for the model to fix issues]
 
-### Second Pass
+### Second Pass (Fix Quality)
 
 | Criterion | Score (1-5) | Notes |
 |-----------|-------------|-------|
-| Tool Usage | | |
-| Design Tokens | | |
-| Layout Quality | | |
-| Naming | | |
-| Accuracy | | |
-| Lint Compliance | | |
-| Visual Quality | | |
+| Issue Coverage | | |
+| Fix Quality | | |
+| Token Remediation | | |
+| Layout Fixes | | |
+| Naming Fixes | | |
+| Lint Resolution | | |
+| Visual Improvement | | |
 
 **Total: X/35**
 
+### Final Screenshot
+
+![Final result](results/[model-name]-final.png)
+
 ### Summary
 
-[Brief overall assessment — strengths, weaknesses, how much the model improved after feedback]
+[Brief overall assessment — how well the model followed design practices initially, and how effectively it addressed feedback]
 ```
 
 ## Notes
 
 - Be objective and consistent across models
-- Score based on what was actually produced, not intent
-- The improvement prompt is part of the benchmark — a good prompt tests whether the model can iterate
-- If the model failed to export a PNG, score Visual Quality based on the node tree inspection
+- First pass scores design practice adherence — did the model do it right from the start?
+- Second pass scores fix quality — did the model understand and correctly apply the feedback?
+- The improvement prompt is part of the benchmark — it tests whether the model can iterate on design work
+- Save the final exported PNG to `results/[model-name]-final.png` so it can be linked from the results table
+- If the model failed to export a PNG, score Visual Quality / Visual Improvement based on the node tree inspection
