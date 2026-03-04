@@ -1,6 +1,6 @@
 # Vibma Benchmark — Orchestrator Instructions
 
-You are the orchestrator running in **Claude Code** (Opus 4.6). Your job is to run each model through a challenge via **Cursor agent CLI**, review the results, provide feedback, and record everything.
+You are the orchestrator running in **Claude Code** (Opus 4.6). Your job is to run each model through three rounds via **Cursor agent CLI**, review the results, and record everything.
 
 The models under test run in **Cursor**. You (the reviewer) run in **Claude Code** with Vibma access to inspect their work.
 
@@ -13,80 +13,75 @@ The models under test run in **Cursor**. You (the reviewer) run in **Claude Code
 
 ## Pipeline
 
-For each **(model, challenge)** combination:
+For each model:
 
-### 1. Run the Model
+### Round 1 — Detailed (Cursor)
+
+Run the model with the structured challenge:
 
 ```bash
 cursor-agent -p \
   --model <model-name> \
   --output-format stream-json \
-  "$(cat challenges/<challenge>.md)" \
-  > results/<model>-<challenge>-log.ndjson
+  "$(cat challenges/design-system-structured.md)" \
+  > results/<model>-detailed-log.ndjson
 ```
 
-This captures the full conversation — every tool call, decision, and response.
+### Round 2 — Fix (Cursor)
 
-### 2. Review First Pass (Claude Code)
-
-You (Opus in Claude Code) review the work:
-- Read the conversation log: `results/<model>-<challenge>-log.ndjson`
-- Follow the review rubric: `review.md`
-- Use Vibma to inspect the Figma file directly
-
-Inspect the Figma output, read the conversation log to understand how the model worked, and write the first pass report with scores and commentary.
-
-### 3. Feed Improvement Feedback (Cursor)
-
-Take your improvement feedback and give it back to the model in Cursor:
+Without giving the model any specific feedback, tell it to review and fix its own work:
 
 ```bash
 cursor-agent -p \
   --model <model-name> \
   --output-format stream-json \
   --resume <session-id> \
-  "<improvement feedback>" \
-  > results/<model>-<challenge>-fix-log.ndjson
+  "Review what you just built. Lint all sections, check that you're using design tokens instead of hardcoded values, verify all layers have semantic names, and fix any issues you find." \
+  > results/<model>-fix-log.ndjson
 ```
 
-### 4. Review Second Pass (Claude Code)
+The model gets no hints about what's wrong — it has to find and fix issues on its own.
 
-Read the fix log and re-inspect the Figma file via Vibma. Write the second pass report focused on how well the model addressed your feedback.
+### Round 3 — Vague (Cursor)
 
-### 5. Record Cost
+Clean the Figma file (delete the Benchmark page), then run the vague challenge:
 
-Check Cursor billing after each run. Record the cost for the model's first pass and fix pass combined. This goes in the **Cost** column of the results table.
+```bash
+cursor-agent -p \
+  --model <model-name> \
+  --output-format stream-json \
+  "$(cat challenges/personal-blog-vague.md)" \
+  > results/<model>-vague-log.ndjson
+```
 
-### 6. Save Results
+### Review All Rounds (Claude Code)
 
-Each run produces:
-- `results/<model>-<challenge>-log.ndjson` — first pass conversation
-- `results/<model>-<challenge>-fix-log.ndjson` — fix pass conversation
-- `results/<model>-<challenge>-final.png` — final screenshot
-- `results/<model>-<challenge>.md` — full report (scores + commentary + cost)
+You (Opus in Claude Code) review all three rounds:
+- Read each conversation log
+- Use Vibma to inspect the Figma output directly
+- Follow the rubric in `review.md`
+- Write the full report with scores and commentary for each round
 
-### 7. Update Results Table
+### Record Cost
+
+Check Cursor billing after all rounds. Record the total cost across all three rounds.
+
+### Save Results
+
+Each model produces:
+- `results/<model>-detailed-log.ndjson` — detailed round conversation
+- `results/<model>-fix-log.ndjson` — fix round conversation
+- `results/<model>-vague-log.ndjson` — vague round conversation
+- `results/<model>-final.png` — final screenshot
+- `results/<model>.md` — full report (scores + commentary + cost)
+
+### Update Results Table
 
 Add a row to the results table in `README.md`.
 
-## Challenge Types
-
-Challenges live in `challenges/` and come in two flavors:
-
-### Structured
-Step-by-step instructions with specific requirements. Tests whether the model can follow detailed design specs and use tools correctly.
-
-Example: `challenges/design-system-structured.md`
-
-### Vague
-One or two sentences. No steps, no specs. Tests whether the model can interpret intent, make reasonable design decisions, discover the existing design system, and produce something useful without hand-holding.
-
-Example: `challenges/personal-blog-vague.md` — "Build a design system for my personal blog. Support light and dark mode."
-
-The same review rubric applies to both types. For vague challenges, the **Accuracy** criterion evaluates whether the model's interpretation was reasonable rather than whether it matched a spec.
-
 ## Notes
 
-- Clean up the Figma file between runs — delete the Benchmark page so each model starts fresh
+- Clean up the Figma file between the fix and vague rounds — delete the Benchmark page so the vague round starts fresh
 - Use the same Figma file (same design system) across all models for a fair comparison
 - The conversation logs are the key differentiator — two models might produce similar output but get there very differently
+- The fix round is intentionally blind — the model must self-review, not follow specific instructions
