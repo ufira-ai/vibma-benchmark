@@ -1,12 +1,15 @@
 # Vibma Benchmark — Orchestrator Instructions
 
-You are running the Vibma Benchmark pipeline. Your job is to run each model through a challenge, review the results, provide feedback, and record everything.
+You are the orchestrator running in **Claude Code** (Opus 4.6). Your job is to run each model through a challenge via **Cursor agent CLI**, review the results, provide feedback, and record everything.
+
+The models under test run in **Cursor**. You (the reviewer) run in **Claude Code** with Vibma access to inspect their work.
 
 ## Prerequisites
 
 - Figma file open with an existing design system (color variables + text styles)
 - Vibma V0.3.1 tunnel + plugin connected
 - Cursor agent CLI installed (`cursor-agent`)
+- Claude Code session with Vibma MCP configured (for review steps)
 
 ## Pipeline
 
@@ -24,31 +27,31 @@ cursor-agent -p \
 
 This captures the full conversation — every tool call, decision, and response.
 
-### 2. Review First Pass
+### 2. Review First Pass (Claude Code)
 
-Open Claude Code (or Cursor with Opus 4.6) and provide:
-- The conversation log: `results/<model>-<challenge>-log.ndjson`
-- The review rubric: `review.md`
-- Vibma access to the same Figma file
+You (Opus in Claude Code) review the work:
+- Read the conversation log: `results/<model>-<challenge>-log.ndjson`
+- Follow the review rubric: `review.md`
+- Use Vibma to inspect the Figma file directly
 
-Opus inspects the Figma output, reads the conversation log to understand how the model worked, and writes the first pass report with scores and commentary.
+Inspect the Figma output, read the conversation log to understand how the model worked, and write the first pass report with scores and commentary.
 
-### 3. Feed Improvement Feedback
+### 3. Feed Improvement Feedback (Cursor)
 
-Take the improvement feedback from Opus's report and give it to the model:
+Take your improvement feedback and give it back to the model in Cursor:
 
 ```bash
 cursor-agent -p \
   --model <model-name> \
   --output-format stream-json \
   --resume <session-id> \
-  "<improvement feedback from Opus>" \
+  "<improvement feedback>" \
   > results/<model>-<challenge>-fix-log.ndjson
 ```
 
-### 4. Review Second Pass
+### 4. Review Second Pass (Claude Code)
 
-Give Opus the fix log and have it re-inspect the Figma file. Opus writes the second pass report focused on how well the model addressed feedback.
+Read the fix log and re-inspect the Figma file via Vibma. Write the second pass report focused on how well the model addressed your feedback.
 
 ### 5. Record Cost
 

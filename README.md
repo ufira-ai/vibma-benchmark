@@ -4,22 +4,22 @@ Standardized evaluation of AI models performing design tasks in Figma through [V
 
 ## How It Works
 
-Models are run via [Cursor agent CLI](https://cursor.com/docs/cli/using) with `--output-format stream-json`, which captures the full conversation — every tool call, response, and decision — into an NDJSON log. The orchestrator ([`run.md`](run.md)) manages the pipeline end-to-end.
+Models under test run in **[Cursor agent CLI](https://cursor.com/docs/cli/using)** with `--output-format stream-json`, which captures the full conversation into an NDJSON log. The orchestrator and reviewer is **Opus 4.6 in Claude Code** ([`run.md`](run.md)), which manages the pipeline, inspects Figma output via Vibma, and writes reports.
 
-Each model gets a challenge from [`challenges/`](challenges/) — either a detailed spec or a vague one-liner. Opus 4.6 reviews both the Figma output and the conversation log using [`review.md`](review.md), writes a report with scores and commentary on what the model did well and what it got wrong, then gives specific improvement feedback. The model applies fixes, and Opus reviews again.
+Each model gets a challenge from [`challenges/`](challenges/) — either a detailed spec or a vague one-liner. Opus reviews both the Figma output and the conversation log using [`review.md`](review.md), writes a report with scores and commentary on what the model did well and what it got wrong, then gives specific improvement feedback. The model applies fixes in Cursor, and Opus reviews again from Claude Code.
 
 ```
-Orchestrator picks model + challenge
+Opus (Claude Code) picks model + challenge
         ↓
-cursor-agent runs model (conversation → NDJSON log)
+Model runs in Cursor (conversation → NDJSON log)
         ↓
-Opus reviews Figma output + conversation log
+Opus (Claude Code) reviews Figma output + conversation log
         ↓
 Report: scores + what went well + what went wrong (first pass, /35)
         ↓
-Model receives improvement feedback → applies fixes
+Model receives feedback → applies fixes in Cursor
         ↓
-Report: fix quality + what improved + what's still wrong (second pass, /35)
+Opus (Claude Code) reviews again → fix quality (second pass, /35)
         ↓
 Screenshot + full report saved to results/
 ```
