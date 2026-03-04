@@ -2,7 +2,27 @@
 
 Standardized evaluation of AI models performing design tasks in Figma through [Vibma](https://github.com/nicepkg/vibma) MCP.
 
-Models are given a multi-step design challenge (`instructions.md`), then reviewed and scored by Opus 4.6 (`review.md`). After receiving improvement feedback, models get a second attempt. Both scores are recorded.
+## How It Works
+
+A model connects to Figma via Vibma and is given a multi-step design challenge ([`instructions.md`](instructions.md)) — build a design system page, then a UI mockup, following proper design practices throughout.
+
+Once complete, Opus 4.6 reviews the work using [`review.md`](review.md): inspects the node tree, checks for hardcoded values vs design tokens, runs lint, and scores across 7 criteria. It then gives the model specific feedback to fix. The model applies fixes, and Opus scores a second time — this pass measures how well the model responds to design review feedback.
+
+```
+Model reads instructions.md
+        ↓
+Model builds in Figma via Vibma
+        ↓
+Opus 4.6 reviews → scores design practice adherence (first pass, /35)
+        ↓
+Opus gives specific improvement feedback
+        ↓
+Model applies fixes
+        ↓
+Opus reviews again → scores fix quality (second pass, /35)
+        ↓
+Final screenshot + results saved
+```
 
 ## Results
 
@@ -14,32 +34,13 @@ Models are given a multi-step design challenge (`instructions.md`), then reviewe
 | Claude Sonnet 4.6 | 28/35 | 33/35 | [screenshot](results/claude-sonnet-4-6-final.png) |
 -->
 
-## How to Run
+Per-model breakdowns with full score tables, the improvement prompt given, and final screenshot are in [`results/`](results/).
 
-### Prerequisites
-- A Figma file with an existing design system (color variables + text styles)
-- [Vibma](https://github.com/nicepkg/vibma) tunnel + plugin running and connected
+## Scoring
 
-### Benchmark a Model
+Each pass scores 7 criteria on a 1–5 scale (max 35).
 
-1. Open a Figma file that has color variables and text styles defined
-2. Start Vibma tunnel and connect the plugin
-3. Give the model the contents of `instructions.md` as its task
-4. Let it complete both phases without interruption
-5. When done, give Opus 4.6 the contents of `review.md` along with:
-   - The exported PNG from the model
-   - Access to inspect the Figma file via Vibma
-6. Opus scores the work and provides improvement feedback
-7. Give the model the improvement feedback, let it apply fixes
-8. Opus scores again (second pass rubric — focused on fix quality)
-9. Save the final exported PNG to `results/[model-name]-final.png`
-10. Save results to `results/[model-name].md`
-
-### Scoring
-
-Each criterion is scored 1–5 (max total: 35).
-
-**First pass** — how well the model follows design practices:
+**First pass** — did the model follow design practices on its own?
 
 | Criterion | What's Evaluated |
 |-----------|-----------------|
@@ -51,21 +52,17 @@ Each criterion is scored 1–5 (max total: 35).
 | Lint Compliance | Ran lint, fixed issues |
 | Visual Quality | Professional appearance, hierarchy |
 
-**Second pass** — how well the model fixes issues from feedback:
+**Second pass** — did the model fix what was flagged?
 
 | Criterion | What's Evaluated |
 |-----------|-----------------|
-| Issue Coverage | Did it address all flagged issues? |
-| Fix Quality | Were fixes correct, or did they introduce new problems? |
-| Token Remediation | Hardcoded values replaced with proper variables/styles? |
+| Issue Coverage | All flagged issues addressed? |
+| Fix Quality | Correct fixes, no regressions? |
+| Token Remediation | Hardcoded values replaced with variables/styles? |
 | Layout Fixes | Auto-layout and spacing issues resolved? |
 | Naming Fixes | Default names replaced with semantic ones? |
-| Lint Resolution | Previously failing lint checks now pass? |
+| Lint Resolution | Previously failing checks now pass? |
 | Visual Improvement | Visible improvement in the final screenshot? |
-
-### Results per Model
-
-Full per-model breakdowns are in `results/[model-name].md`. Each includes both score tables, the improvement prompt given, and a final screenshot at `results/[model-name]-final.png`.
 
 ## License
 
