@@ -1,0 +1,50 @@
+=== Session Info ===
+Model: gpt-5.3-codex (xhigh reasoning)
+CLI: codex exec --json
+
+=== MCP Tool Calls (124 total) ===
+  28 create_frame
+  22 create_text
+   9 get_node_info
+   8 insert_child
+   7 patch_nodes
+   7 components
+   5 styles
+   4 ping
+   4 instances
+   3 variable_collections
+   3 set_variable_binding
+   3 set_text_content
+   3 get_node_variables
+   3 get_available_fonts
+   3 clone_node
+   2 variables
+   2 lint_node
+   2 join_channel
+   2 delete_node
+   1 set_current_page
+   1 reset_tunnel
+   1 export_node_as_image
+   1 create_page
+   1 channel_info
+
+=== Errors ===
+(none)
+
+=== MCP Tool Warnings (6 total) ===
+   1 Component has 6 text nodes — use components(method: "create", type: "from_node", exposeText: true) or components(method: "update") to expose text as editable properties on instances.
+   1 Component has 5 text nodes — use components(method: "create", type: "from_node", exposeText: true) or components(method: "update") to expose text as editable properties on instances.
+   1 Component has 3 text nodes — use components(method: "create", type: "from_node", exposeText: true) or components(method: "update") to expose text as editable properties on instances.
+   1 Component has 2 text nodes — use components(method: "create", type: "from_node", exposeText: true) or components(method: "update") to expose text as editable properties on instances.
+   1 Component has 1 text node — use components(method: "create", type: "from_node", exposeText: true) or components(method: "update") to expose text as editable properties on instances.
+   1 3 text nodes across variants not exposed as properties — instances cannot edit this text via properties. Fix: components(method: "update", items: [{id: "18:202", propertyName: "<textNodeName>", type: "TEXT", defaultValue: "<text>"}])
+
+=== Lint Findings ===
+   8 hardcoded-color
+   1 no-autolayout (first pass)
+   1 no-autolayout (second pass)
+Total lint findings received: 10
+
+=== Token Usage ===
+Turn 1: 60,749 input (37,120 cached) / 835 output
+Turn 2: 7,524,687 input (7,389,440 cached) / 38,329 output

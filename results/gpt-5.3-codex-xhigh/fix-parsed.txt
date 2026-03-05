@@ -1,0 +1,64 @@
+=== Session Info ===
+Model: gpt-5.3-codex (xhigh reasoning)
+CLI: codex exec --json
+Round: Fix
+
+=== MCP Tool Calls (150 total) ===
+  39 lint_node
+  16 patch_nodes
+  14 create_frame
+  12 create_text
+  10 set_variable_binding
+  10 get_node_info
+   8 instances
+   7 set_text_content
+   7 components
+   5 insert_child
+   4 export_node_as_image
+   2 variables
+   2 styles
+   2 set_current_page
+   2 ping
+   2 join_channel
+   2 get_current_page
+   1 variable_collections
+   1 search_nodes
+   1 get_document_info
+   1 delete_node
+   1 create_section
+   1 create_page
+
+=== Errors ===
+(none)
+
+=== MCP Tool Warnings (11 total) ===
+   2 Hardcoded color #ffffff has no matching paint style or color variable.
+   2 Hardcoded color #2563eb matches variable 'brand/primary'. Use set_variable_binding.
+   1 Hardcoded color #ffffff matches variable 'bg/surface'. Use set_variable_binding.
+   1 Hardcoded color #2563eb matches 'brand/primary' + #cbd5e1 matches 'border/default'. Use set_variable_binding.
+   1 Hardcoded color #000000 has no matching paint style or color variable.
+   1 Component has 7 text nodes — use exposeText: true.
+   1 Component has 4 text nodes — use exposeText: true.
+   1 Component has 3 text nodes — use exposeText: true.
+   1 6 text nodes across variants not exposed as properties.
+
+=== Lint Summary (39 lint_node calls) ===
+Dashboard Page: zero findings (hardcoded-color, no-autolayout, no-text-style, empty-container)
+Benchmark Root post-fix: 25 empty-container (color swatches), 0 hardcoded-color, 0 no-autolayout
+
+=== Fixes Applied ===
+- Deleted 4 orphaned frames (Hero Actions, Features Grid, Testimonials Grid, Footer Links)
+- Fixed Button component set auto-layout
+- Fixed Pro card CTA contrast (bound to brand/primary)
+- Added content to Icon Placeholder ("+" glyph) and Avatar Placeholder ("AB" glyph)
+- Fixed low-contrast icon overrides in Feature Card instances
+
+=== Dashboard Build ===
+- Created new "Dashboard" page with 2 sections
+- 4 new components: Stat Card, Sidebar Nav, Table Row, Input Field (variant set: Default/Error)
+- All components variable-bound (bg/surface + border/subtle)
+- Assembled dashboard: Sidebar + Main Content (Nav Bar, 4 Stat Cards, Data Table, Form Section)
+- Reused existing components: Button (Ghost variant in Table Row), Navigation Bar
+
+=== Token Usage ===
+Turn 1: 9,334,747 input (8,974,720 cached) / 30,365 output

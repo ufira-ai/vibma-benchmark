@@ -1,89 +1,104 @@
 # Vibma Benchmark Challenge
 
-You are being evaluated on your ability to perform real design tasks in Figma using Vibma MCP tools. Follow these instructions precisely. Your work will be reviewed and scored.
+You have Vibma MCP tools available in your environment. Use them directly — do NOT look at project files, start servers, or run shell commands to interact with Figma. The MCP server is already configured and connected.
 
-## Phase 1: Design System (Read + Create)
+Start by calling `join_channel` (channel: "vibma"), then `ping` to confirm the connection. After that, use the MCP tools for all Figma operations.
 
-### Step 1 — Inspect the Document
-- Use `get_document_info` to list all existing pages, styles, and variables
-- Understand what design tokens are available before creating anything
+## Part 1: Design Tokens
 
-### Step 2 — Create Benchmark Page
-- Create a new page called **"Benchmark"**
-- Switch to it as your active page
+You're starting with a blank Figma file. Build a complete design system foundation.
 
-### Step 3 — Color Palette Section
-- Create a frame with **auto-layout** (vertical, gap: 16, padding: 32)
-- Name it `"Color Palette"`
-- For each color variable in the document:
-  - Create a horizontal auto-layout frame containing:
-    - A 48x48 rectangle filled using the **color variable** (not a hardcoded hex value)
-    - A text label with the variable name
-  - Name each swatch frame semantically (e.g., `"Swatch / Primary"`)
-- Name all layers semantically — no `"Frame 1"`, `"Rectangle 2"`, etc.
+### Color Variables
 
-### Step 4 — Typography Scale Section
-- Create a frame with **auto-layout** (vertical, gap: 16, padding: 32)
-- Name it `"Typography Scale"`
-- For each text style in the document:
-  - Create a text node using that **text style**
-  - Set content to: `"[Style Name] — The quick brown fox jumps over the lazy dog"`
-  - Name the text layer with the style name
-- Name all layers semantically
+Create a variable collection called **"Colors"** with two modes: **Light** and **Dark**.
 
-### Step 5 — Lint & Fix
-- Run `lint_node` on the Color Palette section — fix any issues found
-- Run `lint_node` on the Typography Scale section — fix any issues found
+Include at minimum:
+- **Brand**: `brand/primary`, `brand/secondary` — your main brand colors
+- **Accent scale**: `accent/100` through `accent/900` — a full tonal scale
+- **Backgrounds**: `bg/primary`, `bg/secondary`, `bg/surface`, `bg/elevated`
+- **Text**: `text/primary`, `text/secondary`, `text/muted`, `text/inverse`
+- **Semantic**: `semantic/success`, `semantic/error`, `semantic/warning`, `semantic/info`
+- **Border**: `border/default`, `border/subtle`
 
----
+Each variable should have appropriate values for both Light and Dark modes.
 
-## Phase 2: UI Mockup (Create + Edit)
+### Text Styles
 
-### Step 6 — Build a Settings Card
-Create a component-like frame named `"Settings Card"` with this structure:
+Create a type scale with distinct sizes and weights:
+- **Display**: Large hero text
+- **Heading**: H1, H2, H3
+- **Body**: Large, Regular, Small
+- **Caption**: Regular, Small
+- **Label**: Medium, Small
 
-```
-Settings Card (auto-layout: vertical, padding: 24, gap: 16)
-├── User Info Row (auto-layout: horizontal, gap: 12, align: center)
-│   ├── Avatar (48x48 circle frame, filled with a color variable)
-│   └── User Details (auto-layout: vertical, gap: 4)
-│       ├── User Name (text, using a heading text style)
-│       └── Email (text, using a body/smaller text style)
-└── Toggle Row (auto-layout: horizontal, gap: 12, justify: space-between)
-    ├── Toggle Info (auto-layout: vertical, gap: 2)
-    │   ├── Toggle Label (text, using a body text style)
-    │   └── Toggle Description (text, using a caption/smaller text style)
-    └── Toggle (44x24 rounded rectangle, filled with a color variable)
-```
+Use a professional font family. Headings should be bold/semibold, body regular, captions/labels medium weight.
 
-Requirements:
-- Use **fill styles or variables** for all backgrounds — no hardcoded colors
-- Use **text styles** for all text — no manual font settings
-- All frames must use **auto-layout**
-- All layers must have **semantic names**
+## Part 2: Design System Page
 
-### Step 7 — Create Instances
-- Duplicate the Settings Card **3 times**
-- Give each card **different content**:
-  - Card 1: "Alice Johnson" / "alice@example.com" / "Dark Mode" / "Enable dark theme"
-  - Card 2: "Bob Smith" / "bob@example.com" / "Notifications" / "Push notifications"
-  - Card 3: "Carol Davis" / "carol@example.com" / "Auto-Save" / "Save changes automatically"
-- Name them `"Settings Card / Alice"`, `"Settings Card / Bob"`, `"Settings Card / Carol"`
+Create a new page called **"Benchmark"** and document your tokens:
 
-### Step 8 — Export
-- Export the Benchmark page (or the top-level frame) as **PNG** for review
+- A **color palette** section showing all your color variables as labeled swatches, bound to the actual variables (not hardcoded hex)
+- A **typography scale** section showing all your text styles with sample text
+- Use auto-layout for layout. Name all layers semantically.
 
----
+## Part 3: Components
 
-## Requirements Checklist
+Build the following 5 components on the Benchmark page. All must use your design tokens (color variables + text styles), auto-layout, and semantic naming.
 
-Your work will be scored on whether you:
+### 1. Button
+- Primary, secondary, and ghost variants
+- Include a text label
+- Proper padding and border radius
 
-- [ ] Used `get_document_info` to inspect before creating
-- [ ] Used existing styles/variables (not hardcoded values)
-- [ ] All frames use auto-layout
-- [ ] Semantic layer naming throughout (no default names)
-- [ ] Ran `lint_node` and addressed issues
-- [ ] Card component is properly structured with all required elements
-- [ ] Three instances have distinct content
-- [ ] Final export produced as PNG
+### 2. Navigation Bar
+- Logo/brand text on the left
+- Nav links in the middle (Features, Pricing, Testimonials)
+- CTA button on the right ("Get Started")
+- Full-width, horizontal layout
+
+### 3. Feature Card
+- Icon placeholder (square or circle frame)
+- Feature title (heading style)
+- Feature description (body style, 1-2 lines)
+- Card background using surface color variable
+
+### 4. Pricing Card
+- Plan name (heading style)
+- Price with period (e.g., "$29/mo")
+- Feature list (3-5 bullet items)
+- CTA button at the bottom
+- Create 3 tiers: Free, Pro, Enterprise
+- Highlight the Pro card as the recommended option (accent background or border)
+
+### 5. Testimonial Card
+- Avatar placeholder (circle)
+- Quote text (body/italic style)
+- Person name (label/bold style) and role/company (caption style)
+
+## Part 4: SaaS Landing Page
+
+Assemble your components into a **SaaS landing page** mockup on the Benchmark page:
+
+1. **Nav bar** at the top
+2. **Hero section**: Display heading, subtitle in body text, two buttons (primary "Get Started" + secondary "Learn More")
+3. **Features section**: Section heading + 3 feature cards in a row
+4. **Pricing section**: Section heading + 3 pricing cards side by side
+5. **Testimonials section**: Section heading + 2-3 testimonial cards
+6. **Footer**: Simple footer with brand name, copyright, and a few links
+
+This should look like a real landing page — full width, proper spacing between sections, visual hierarchy.
+
+## Part 5: Export
+
+Export the Benchmark page as PNG.
+
+## Scoring Criteria
+
+- Created variable collection with Light/Dark modes and organized color scales
+- Created distinct text styles with proper size/weight differentiation
+- Color swatches bound to variables, not hardcoded
+- All 5 components built with proper variants
+- Components use design tokens throughout
+- Landing page assembles components into a realistic, full-width layout
+- Auto-layout and semantic naming throughout
+- Final PNG exported

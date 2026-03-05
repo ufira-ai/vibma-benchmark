@@ -60,18 +60,18 @@ The model ran the structured challenge. How well did it follow the spec and use 
 
 ---
 
-#### Fix (/30) — Self-Review and Fixing
+#### Fix (/30) — Self-Review, Fixing, and Dashboard Build
 
-The model was told to review and fix its own work with no specific feedback — just "lint, check tokens, check naming, fix issues." How well did it find and fix its own problems?
+The model lints and fixes its landing page, then builds 4 new dashboard components and assembles a dashboard layout. How well did it fix issues and apply lessons learned?
 
 | Criterion | What to Evaluate |
 |-----------|-----------------|
-| **Issue Coverage** | Did the model address all flagged issues, or did it skip some? |
-| **Fix Quality** | Were the fixes correctly applied? Did they introduce new problems or regressions? |
-| **Token Remediation** | Were hardcoded values successfully replaced with proper variables/styles? |
-| **Layout Fixes** | Were auto-layout and spacing issues resolved? Padding and alignment corrected? |
-| **Naming Fixes** | Were default layer names replaced with semantic ones? |
-| **Lint Resolution** | Do previously failing lint checks now pass? Run `lint_node` again to verify. |
+| **Lint & Fix** | Did it find and fix lint issues on the landing page? Do previously failing checks now pass? |
+| **Visual Polish** | Did it export, review, and improve the visual quality of its work? |
+| **New Components** | Are the 4 dashboard components (Stat Card, Sidebar Nav, Table Row, Input Field) well-built? |
+| **Dashboard Layout** | Is the assembled dashboard functional and well-structured? Does it reuse existing components? |
+| **Learned from Lint** | Did the new dashboard components come out clean — variables bound, styles applied, semantic names — without needing a second lint pass? Shows whether the model internalized the feedback. |
+| **Overall Quality** | Professional result across both the fixed landing page and the new dashboard? |
 
 ---
 
@@ -100,98 +100,24 @@ For each round, write:
 
 ### Step 5 — Save Results
 
-Export the final screenshot and save everything to `results/`.
+Export screenshots and save everything to `results/<model>/`.
 
 ## Output Format
 
-Write the report to `results/[model-name].md`:
+Write the report to `results/<model>/report.md`. Include:
 
-```markdown
-# [Model Name] — Vibma Benchmark Report
+1. **Human Observations** at the top — what worked well and issues found by manual inspection
+2. **Scoring tables** for each round with per-criterion scores and notes
+3. **Commentary** — what the model did well and got wrong, with references to tool calls and nodes
+4. **Summary table** — all rounds with scores, duration, MCP calls, cost
+5. **Screenshot links** — link to `detailed-screenshot.png`, `fix-screenshot.png`
 
-## Detailed — Instruction Following + Reading from Design (/30)
-
-| Criterion | Score (1-5) | Notes |
-|-----------|-------------|-------|
-| Tool Usage | | |
-| Design Tokens | | |
-| Layout Quality | | |
-| Naming | | |
-| Accuracy | | |
-| Lint Compliance | | |
-
-**Score: X/30**
-
-### What the model did well
-
-[Specific observations from the conversation log and Figma output]
-
-### What the model got wrong
-
-[Specific failures with references to tool calls and Figma nodes]
-
----
-
-## Fix — Self-Review (/30)
-
-| Criterion | Score (1-5) | Notes |
-|-----------|-------------|-------|
-| Issue Coverage | | |
-| Fix Quality | | |
-| Token Remediation | | |
-| Layout Fixes | | |
-| Naming Fixes | | |
-| Lint Resolution | | |
-
-**Score: X/30**
-
-### What the model found and fixed
-
-[What issues did it identify on its own? How effective were its fixes?]
-
-### What the model missed
-
-[Issues it didn't catch, problems it introduced, things it overlooked]
-
----
-
-## Vague — Interpreting Intent (/30)
-
-| Criterion | Score (1-5) | Notes |
-|-----------|-------------|-------|
-| Interpretation | | |
-| Design Tokens | | |
-| Layout Quality | | |
-| Naming | | |
-| Completeness | | |
-| Visual Quality | | |
-
-**Score: X/30**
-
-### What the model did well
-
-[How it interpreted the vague prompt, design decisions it made]
-
-### What the model got wrong
-
-[Missed opportunities, poor decisions, bad practices]
-
----
-
-## Summary
-
-**Total: X/90**
-
-**Cost:** $X.XX (Cursor billing across all rounds)
-
-### Final Screenshot
-
-![Final result]([model-name]-final.png)
-```
+See `results/gpt-5.3-codex-medium/report.md` for the reference format.
 
 ## Notes
 
 - Be objective and consistent across models
 - The conversation log is as important as the Figma output — it reveals _how_ the model works, not just what it produced
 - Commentary should be specific enough that someone reading the report understands exactly what happened
-- Save the final exported PNG to `results/[model-name]-final.png`
+- Parse logs with `./scripts/parse-log.sh` — captures MCP tool warnings and lint findings
+- Check the behavior matrix in README — update both blank and polluted context tables
