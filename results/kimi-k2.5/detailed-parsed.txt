@@ -1,0 +1,58 @@
+=== Session Info ===
+Model: kimi-k2.5
+CLI: cursor-agent --model kimi-k2.5
+
+=== MCP Tool Calls (161 completed) ===
+  37 create_frame
+  29 set_variable_binding
+  25 create_text
+  14 patch_nodes
+  13 null (errors)
+   9 variables
+   9 clone_node
+   6 set_text_content
+   6 scan_text_nodes
+   3 variable_collections
+   3 styles
+   2 ping
+   1 set_current_page
+   1 join_channel
+   1 get_current_page
+   1 export_node_as_image
+   1 create_page
+
+=== Errors ===
+13 null tool calls (likely tool call errors)
+
+=== MCP Tool Warnings (59 total) ===
+  12 Hardcoded color #0f172a matches 'text/primary'. Use set_variable_binding.
+  10 Hardcoded color #ffffff matches 'bg/primary'. Use set_variable_binding.
+   6 Hardcoded color #e2e8f0 matches 'border/default'. Use set_variable_binding.
+   6 Hardcoded color #475569 matches 'text/secondary'. Use set_variable_binding.
+   6 Hardcoded color #2563eb matches 'brand/primary'. Use set_variable_binding.
+   3 Manual font (9px / 500w) has no text style. WCAG: Min 12px text.
+   2 Hardcoded color #f8fafc matches 'bg/secondary'. Use set_variable_binding.
+   2 Hardcoded color #94a3b8 matches 'text/muted'. Use set_variable_binding.
+   2 Hardcoded color #3b82f6 matches 'accent/500'. Use set_variable_binding.
+   + 10 more hardcoded color warnings (accent scale, brand/secondary)
+
+=== Lint Findings ===
+(model did not run lint_node)
+
+Post-review lint:
+  45 hardcoded-color
+  25 no-text-style
+  22 empty-container
+
+=== Notable ===
+- Zero components() calls — no Figma components created, only frames
+- Zero get_node_info calls — no inspection of what was built
+- Zero lint_node calls — no self-checking
+- Zero instances() calls — landing page uses clone_node (9 calls) instead
+- Landing page frame is 1000x100 — content overflows, clipped
+- Testimonial cards have identical content (same quote, same author)
+- Accent swatch labels appear twice (duplicate labels per swatch)
+- Text/semantic/border color sections missing from palette
+
+=== Token Usage ===
+12.3M input (12.1M cached) / 27K output

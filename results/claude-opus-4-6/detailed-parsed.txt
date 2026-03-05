@@ -1,0 +1,74 @@
+=== Session Info ===
+Model: Claude Opus 4.6
+CLI: claude --model claude-opus-4-6
+Duration: 12.8 min (768s)
+
+=== MCP Tool Calls (136 total) ===
+  43 create_frame
+  36 create_text
+  11 set_text_content
+   9 variables
+   9 instances
+   7 components
+   6 patch_nodes
+   3 variable_collections
+   3 export_node_as_image
+   2 ping
+   2 styles
+   2 set_variable_binding
+   1 join_channel
+   1 create_page
+   1 set_current_page
+
+=== Variables & Styles ===
+- Colors collection: 25 variables, Light/Dark modes
+- 11 text styles: Display/Large, H1-H3, Body L/R/S, Caption R/S, Label M/S
+- Missing vs Codex xhigh: Body/Italic, Label/Bold (same as other models)
+
+=== Lint Findings (post-review) ===
+Full page:
+   0 hardcoded-color
+   0 no-text-style
+   0 default-name
+  33 empty-container (color swatches + icon/avatar placeholders)
+   2 no-autolayout (Button + Pricing Card component sets)
+
+Landing page only:
+   0 findings (all categories clean)
+
+=== Components ===
+- Button: COMPONENT_SET (Primary, Secondary, Ghost variants)
+- Navigation Bar: COMPONENT
+- Feature Card: COMPONENT
+- Pricing Card: COMPONENT_SET (Free, Pro, Enterprise variants)
+- Testimonial Card: COMPONENT
+- All 5 components properly created via components() — 7 calls
+
+=== Instances ===
+- 9 instances() calls in landing page
+- Nav Bar: instance with Button instance nested inside
+- Hero: 2 Button instances (Get Started + Learn More)
+- Features: 3 Feature Card instances with distinct content
+- Pricing: 3 Pricing Card instances (Free, Pro, Enterprise)
+- Testimonials: 3 Testimonial Card instances with distinct people
+- All content differentiated — no identical clones
+
+=== MCP Warnings (18 total) ===
+- 7 WCAG line-height recommendations
+- 7 component text property warnings (same blind spot as Codex)
+- 1 hardcoded color (bg/primary on one element)
+- 3 variant text property warnings
+
+=== Notable ===
+- Zero hardcoded-color lint findings across entire page
+- Zero no-text-style lint findings
+- Zero default-name lint findings
+- All landing page children are INSTANCE type
+- Differentiated content: 3 unique features, 3 unique testimonials, 3 unique pricing tiers
+- Pro card: "Recommended" badge + accent border
+- 3 exports — inspected its own work during build
+- Proper 1280x2276 page sizing, no clipping
+- 12.8 min completion — fastest among all models
+
+=== Token Usage ===
+9.3M cache read, 0.1M cache create / 3K output
